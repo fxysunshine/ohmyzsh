@@ -102,3 +102,55 @@ source $ZSH/oh-my-zsh.sh
 # Example aliases
 # alias zshconfig="mate ~/.zshrc"
 # alias ohmyzsh="mate ~/.oh-my-zsh"
+alias x='xclip -selection c'
+alias tmuxa='tmux a -d'
+alias tm='tmux a -d'
+alias ifind='find . -name'
+alias findgrep='find . | grep -i '
+alias grep='grep --color=auto --exclude-dir={tests,test,testing} --exclude-dir=.cvs --exclude-dir=.git --exclude=\*unittest\*.{cc,h} --exclude=\*test\*.{cc,h}'
+alias hdsar='sar -d -p 1 5 --dev=sda'
+alias kill9='kill -9'
+
+export RSYNC_PASSWORD='123456'
+export GOPATH=$HOME/go
+export DISABLE_UPDATE_PROMPT=true
+
+[ -f ~/.fzf.zsh ] && source ~/.fzf.zsh
+
+function gitclean() {
+    git status | grep -A10 "git add " | grep -v "git add " | while read file; do rm -rf $file; done
+}
+
+function mypatch() {
+    if [ $# -ge 1 ]; then
+        file=$1
+    else
+        file='patches/debug.patch'
+    fi
+    if [ ! -d ".git" ]; then
+      git init
+    fi
+    git add .
+    if [ -f $file ]; then
+      patch -R -p1 < $file
+      git add .
+      patch -p1 < $file
+    fi
+}
+
+function mydiff() {
+    if [ $# -ge 1 ]; then
+        file=$1
+    else
+        file='patches/debug.patch'
+    fi
+    git diff > $file
+}
+
+function me() {
+    if [ ! -f "/.dockerenv" ]; then
+        echo -e "I'am in \033[41;36mhost\033[0m" $(hostname) "ip:" $(hostname -I)
+    else
+        echo -e "I'am in \033[41;36mconterner\033[0m" $(hostname -i)
+    fi
+}
